@@ -12,10 +12,16 @@ fn main() {
 
     // Get optional arguments (--name, --icon, --version)
     let mut name = binary_path.split("/").last().unwrap().to_string();
+    let mut icon = None;
+    let mut type_ = "Application";
 
     for i in 2..args.len() {
         if args[i] == "--name" {
             name = args[i + 1].clone();
+        } else if args[i] == "--icon" {
+            icon = Some(args[i + 1].clone());
+        } else if args[i] == "--type" {
+            type_ = &args[i + 1];
         }
     }
 
@@ -33,10 +39,10 @@ fn main() {
         "[Desktop Entry]
 Name={0}
 Exec=/etc/dlink/{0}/bin
-Icon={0}
-Type=Application
+Icon={1}
+Type={2}
 Categories=Application;",
-        name
+        name, icon.unwrap_or("".to_string()), type_
     );
 
     fs::write(
