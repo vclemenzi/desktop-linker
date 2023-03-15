@@ -17,7 +17,7 @@ sh ./install.sh
 ## Usage
 
 ```bash
-desktop-linker <binary> [--name <name>] [--icon <icon>] [--type <type>]
+desktop-linker <binary> [--name <name>] [--icon <icon>] [--type <type>] [--assets "file1, file2, ..."]
 ```
 
 `<binary>` is the path to the binary you want to link.
@@ -27,3 +27,5 @@ desktop-linker <binary> [--name <name>] [--icon <icon>] [--type <type>]
 `<icon>` is the path to the icon of the desktop application.
 
 `<type>` is the type of the desktop application.
+
+`<assets>` is a list of assets to be copied to the desktop application directory.

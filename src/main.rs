@@ -10,10 +10,11 @@ fn main() {
 
     let binary_path = &args[1];
 
-    // Get optional arguments (--name, --icon, --version)
+    // Get optional arguments (--name, --icon, --type, --assets)
     let mut name = binary_path.split("/").last().unwrap().to_string();
     let mut icon = None;
     let mut type_ = "Application";
+    let mut assets: Vec<String> = Vec::new();
 
     for i in 2..args.len() {
         if args[i] == "--name" {
@@ -22,6 +23,9 @@ fn main() {
             icon = Some(args[i + 1].clone());
         } else if args[i] == "--type" {
             type_ = &args[i + 1];
+        } else if args[i] == "--assets" {
+            // --assets "path1, path2, path3"
+            assets = args[i + 1].split(",").map(|s| s.trim().to_string()).collect();
         }
     }
 
@@ -34,6 +38,11 @@ fn main() {
     fs::create_dir(format!("/etc/dlink/{}", name)).unwrap();
     fs::copy(binary_path, format!("/etc/dlink/{}/bin", name)).unwrap();
 
+    // Move assets to /etc/dlink/{dir}
+    for a in assets {
+        fs::copy(&a, format!("/etc/dlink/{}/{}", name, a.split("/").last().unwrap().to_string())).unwrap();
+    }
+
     // Create .desktop file
     let desktop_file = format!(
         "[Desktop Entry]
@@ -42,7 +51,9 @@ Exec=/etc/dlink/{0}/bin
 Icon={1}
 Type={2}
 Categories=Application;",
-        name, icon.unwrap_or("".to_string()), type_
+        name,
+        icon.unwrap_or("".to_string()),
+        type_
     );
 
     fs::write(
